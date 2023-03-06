@@ -1,4 +1,4 @@
-package com.example.dogpicturecompose
+package com.example.dogpicturecompose.activities
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
