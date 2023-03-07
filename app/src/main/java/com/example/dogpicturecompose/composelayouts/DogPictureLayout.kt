@@ -87,7 +87,7 @@ fun DogPictureLayout(dogViewModel: DogViewModel) {
                 }
 
                 if (loadingState == ERROR) {
-                    Toast.makeText(LocalContext.current, errorMessage, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
                 }
             }
         }
