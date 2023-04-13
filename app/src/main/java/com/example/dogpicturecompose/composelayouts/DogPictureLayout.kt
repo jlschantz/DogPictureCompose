@@ -25,19 +25,12 @@ import androidx.compose.ui.unit.sp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.example.dogpicturecompose.R
+import com.example.dogpicturecompose.api.ResultState
 import com.example.dogpicturecompose.ui.theme.Purple_500
 import com.example.dogpicturecompose.viewmodels.DogViewModel
-import com.example.dogpicturecompose.viewmodels.DogViewModel.Companion.ERROR
-import com.example.dogpicturecompose.viewmodels.DogViewModel.Companion.LOADING
 
 @Composable
 fun DogPictureLayout(dogViewModel: DogViewModel) {
-
-    val dogPictureList = dogViewModel.dogPictureList
-    val loadingState = dogViewModel.loadingState
-    val errorMessage = dogViewModel.errorMessage
-    val context = LocalContext.current
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -50,7 +43,7 @@ fun DogPictureLayout(dogViewModel: DogViewModel) {
         if(searchBarDisplayed){
             SearchAppBar(
                 onSearchButtonClicked = { query ->
-                    dogViewModel.searchForType(context, query)
+                    dogViewModel.searchForType(query)
                 },
                 onCloseIconClicked = {
                     searchBarDisplayed = false
@@ -58,7 +51,7 @@ fun DogPictureLayout(dogViewModel: DogViewModel) {
             )
         } else {
             TopAppBar(onSearchIconClicked = {
-                    searchBarDisplayed =true
+                    searchBarDisplayed = true
                 }
             )
         }
@@ -69,13 +62,15 @@ fun DogPictureLayout(dogViewModel: DogViewModel) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            if (loadingState == LOADING) {
+            if (dogViewModel.resultState is ResultState.Loading) {
                 CircularProgressIndicator(
                     modifier = Modifier.size(50.dp),
                     color = Purple_500
                 )
             } else {
-                if (dogPictureList.isEmpty()) {
+                val dogPictureList: List<String>? = dogViewModel.resultState.data as? List<String>
+
+                if (dogPictureList.isNullOrEmpty()) {
                     Text(
                         text = stringResource(id = R.string.no_results),
                         fontSize = 14.sp,
@@ -89,8 +84,14 @@ fun DogPictureLayout(dogViewModel: DogViewModel) {
                     }
                 }
 
-                if (loadingState == ERROR) {
-                    Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
+                if (dogViewModel.resultState is ResultState.Error) {
+                    val context = LocalContext.current
+
+                    Toast.makeText(
+                        context,
+                        dogViewModel.resultState.error ?: context.getString(R.string.an_error_has_occurred),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         }

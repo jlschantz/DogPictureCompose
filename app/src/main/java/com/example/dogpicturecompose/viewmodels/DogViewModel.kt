@@ -1,12 +1,11 @@
 package com.example.dogpicturecompose.viewmodels
 
-import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.dogpicturecompose.R
+import com.example.dogpicturecompose.api.ResultState
 import com.example.dogpicturecompose.api.ResultState.*
 import com.example.dogpicturecompose.repositories.DogRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,9 +18,7 @@ import javax.inject.Inject
 @HiltViewModel
 class DogViewModel @Inject constructor(private val dogRepository: DogRepository): ViewModel() {
 
-    var dogPictureList by mutableStateOf(listOf<String>())
-    var loadingState by mutableStateOf(SUCCESS)
-    var errorMessage by mutableStateOf("")
+    var resultState: ResultState<*> by mutableStateOf(Success<List<String>>(listOf()))
 
     private fun getDogPicturesByType(type: String) = flow {
         emit(Loading(data = null))
@@ -37,36 +34,27 @@ class DogViewModel @Inject constructor(private val dogRepository: DogRepository)
         }
     }
 
-    fun searchForType(context: Context, type: String) {
+    fun searchForType(type: String) {
         viewModelScope.launch(Dispatchers.IO) {
             getDogPicturesByType(type).collect { resource ->
                 withContext(Dispatchers.Main) {
                     when (resource) {
                         is Success -> {
                             resource.data?.let { list ->
-                                loadingState = SUCCESS
-                                dogPictureList = list
+                                resultState = Success(list)
                             } ?: {
-                                loadingState = ERROR
-                                errorMessage = context.getString(R.string.an_error_has_occurred)
+                                resultState = Error<List<String>>(error = null)
                             }
                         }
                         is Error -> {
-                            loadingState = ERROR
-                            errorMessage = resource.error.toString()
+                            resultState = Error<List<String>>(error = resource.error.toString())
                         }
                         is Loading -> {
-                            loadingState = LOADING
+                            resultState = Loading<List<String>>(listOf())
                         }
                     }
                 }
             }
         }
-    }
-
-    companion object{
-        const val SUCCESS = "Success"
-        const val ERROR = "Error"
-        const val LOADING = "Loading"
     }
 }
