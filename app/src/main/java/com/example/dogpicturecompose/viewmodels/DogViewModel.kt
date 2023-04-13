@@ -19,14 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class DogViewModel @Inject constructor(private val dogRepository: DogRepository): ViewModel() {
 
-    var searchBarDisplayed by mutableStateOf(false)
-
-    fun setSearchBarState(boolean: Boolean) {
-        searchBarDisplayed = boolean
-    }
-
     var dogPictureList by mutableStateOf(listOf<String>())
-
     var loadingState by mutableStateOf(SUCCESS)
     var errorMessage by mutableStateOf("")
 

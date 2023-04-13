@@ -33,7 +33,6 @@ import com.example.dogpicturecompose.viewmodels.DogViewModel.Companion.LOADING
 @Composable
 fun DogPictureLayout(dogViewModel: DogViewModel) {
 
-    val searchBarDisplayed = dogViewModel.searchBarDisplayed
     val dogPictureList = dogViewModel.dogPictureList
     val loadingState = dogViewModel.loadingState
     val errorMessage = dogViewModel.errorMessage
@@ -44,18 +43,22 @@ fun DogPictureLayout(dogViewModel: DogViewModel) {
             .fillMaxSize()
             .background(Color.White)
     ) {
+        var searchBarDisplayed by remember {
+            mutableStateOf(false)
+        }
+
         if(searchBarDisplayed){
             SearchAppBar(
                 onSearchButtonClicked = { query ->
                     dogViewModel.searchForType(context, query)
                 },
                 onCloseIconClicked = {
-                    dogViewModel.setSearchBarState(false)
+                    searchBarDisplayed = false
                 }
             )
         } else {
             TopAppBar(onSearchIconClicked = {
-                    dogViewModel.setSearchBarState(true)
+                    searchBarDisplayed =true
                 }
             )
         }
