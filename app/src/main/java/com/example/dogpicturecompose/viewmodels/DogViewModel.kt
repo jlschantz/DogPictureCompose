@@ -21,16 +21,16 @@ class DogViewModel @Inject constructor(private val dogRepository: DogRepository)
     var resultState: ResultState<*> by mutableStateOf(Success<List<String>>(listOf()))
 
     private fun getDogPicturesByType(type: String) = flow {
-        emit(Loading(data = null))
+        emit(Loading())
         try {
             val response = dogRepository.getDogPicturesByType(type)
             if (response.isSuccessful) {
-                emit(Success(data = response.body()?.message))
+                emit(Success(response.body()?.message))
             }else {
-                emit(Error(data = null, error = null))
+                emit(Error(null))
             }
         } catch (exception: Exception) {
-            emit(Error(data = null, error = exception.localizedMessage))
+            emit(Error(exception.localizedMessage))
         }
     }
 
@@ -43,14 +43,14 @@ class DogViewModel @Inject constructor(private val dogRepository: DogRepository)
                             resource.data?.let { list ->
                                 resultState = Success(list)
                             } ?: {
-                                resultState = Error<List<String>>(error = null)
+                                resultState = Error<List<String>>(null)
                             }
                         }
                         is Error -> {
-                            resultState = Error<List<String>>(error = resource.error.toString())
+                            resultState = Error<List<String>>(resource.message.toString())
                         }
                         is Loading -> {
-                            resultState = Loading<List<String>>(listOf())
+                            resultState = Loading<List<String>>()
                         }
                     }
                 }

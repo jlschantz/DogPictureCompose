@@ -68,7 +68,7 @@ fun DogPictureLayout(dogViewModel: DogViewModel) {
                     color = Purple_500
                 )
             } else {
-                val dogPictureList: List<String>? = dogViewModel.resultState.data as? List<String>
+                val dogPictureList: List<*>? = dogViewModel.resultState.data as? List<*>
 
                 if (dogPictureList.isNullOrEmpty()) {
                     Text(
@@ -79,7 +79,7 @@ fun DogPictureLayout(dogViewModel: DogViewModel) {
                 } else {
                     LazyColumn {
                         items(dogPictureList) { item ->
-                            PictureRow(url = item)
+                            PictureRow(url = item as String)
                         }
                     }
                 }
@@ -89,7 +89,7 @@ fun DogPictureLayout(dogViewModel: DogViewModel) {
 
                     Toast.makeText(
                         context,
-                        dogViewModel.resultState.error ?: context.getString(R.string.an_error_has_occurred),
+                        dogViewModel.resultState.message ?: context.getString(R.string.an_error_has_occurred),
                         Toast.LENGTH_SHORT
                     ).show()
                 }
