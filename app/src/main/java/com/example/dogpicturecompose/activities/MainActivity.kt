@@ -76,13 +76,13 @@ class MainActivity : ComponentActivity() {
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        if (dogViewModel.resultState is ResultState.Loading) {
+                        if (dogViewModel.searchForTypeResult is ResultState.Loading) {
                             CircularProgressIndicator(
                                 modifier = Modifier.size(50.dp),
                                 color = Purple_500
                             )
                         } else {
-                            val dogPictureList: List<*>? = dogViewModel.resultState.data as? List<*>
+                            val dogPictureList: List<*>? = dogViewModel.searchForTypeResult.data as? List<*>
 
                             if (dogPictureList.isNullOrEmpty()) {
                                 Text(
@@ -98,12 +98,12 @@ class MainActivity : ComponentActivity() {
                                 }
                             }
 
-                            if (dogViewModel.resultState is ResultState.Error) {
+                            if (dogViewModel.searchForTypeResult is ResultState.Error) {
                                 val context = LocalContext.current
 
                                 Toast.makeText(
                                     context,
-                                    dogViewModel.resultState.message ?: context.getString(R.string.an_error_has_occurred),
+                                    dogViewModel.searchForTypeResult.message ?: context.getString(R.string.an_error_has_occurred),
                                     Toast.LENGTH_SHORT
                                 ).show()
                             }

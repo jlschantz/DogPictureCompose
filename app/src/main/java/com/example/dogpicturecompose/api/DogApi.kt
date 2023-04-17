@@ -9,6 +9,9 @@ interface DogApi {
         const val BASE_URL = "https://dog.ceo/api/"
     }
 
+    @GET("breeds/list")
+    suspend fun getDogBreedList(): Response<DogBreedListResponse>
+
     @GET("breed/{type}/images")
     suspend fun getDogPicturesByType(@Path("type") type: String): Response<DogPictureResponse>
 }

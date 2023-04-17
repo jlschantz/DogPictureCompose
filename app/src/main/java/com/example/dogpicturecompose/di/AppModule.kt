@@ -1,6 +1,9 @@
 package com.example.dogpicturecompose.di
 
+import android.app.Application
+import androidx.room.Room
 import com.example.dogpicturecompose.api.DogApi
+import com.example.dogpicturecompose.db.DogDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -25,4 +28,12 @@ class AppModule {
     @Singleton
     fun provideDogApi(retrofit: Retrofit): DogApi =
         retrofit.create(DogApi::class.java)
+
+    @Provides
+    @Singleton
+    fun provideDogDatabase(app: Application): DogDatabase {
+        return Room.databaseBuilder(app, DogDatabase::class.java, "dog_breeds_database")
+            .fallbackToDestructiveMigration()
+            .build()
+    }
 }
