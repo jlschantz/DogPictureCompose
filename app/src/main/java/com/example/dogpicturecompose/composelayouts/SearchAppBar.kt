@@ -34,7 +34,7 @@ fun SearchAppBar(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(Purple_500)
-                .padding(3.dp),
+                .padding(4.dp),
             value = text,
             onValueChange = { newText ->
                 text = newText

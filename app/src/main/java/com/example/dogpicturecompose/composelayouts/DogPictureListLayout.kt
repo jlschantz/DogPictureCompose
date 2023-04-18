@@ -62,7 +62,8 @@ fun DogPictureListLayout(dogViewModel: DogViewModel) {
             )
         }
 
-        Box(modifier = Modifier
+        Box(
+            modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
         ) {

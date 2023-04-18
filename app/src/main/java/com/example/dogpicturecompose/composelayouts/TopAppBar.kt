@@ -23,7 +23,7 @@ fun TopAppBar(onSearchIconClicked: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .background(Purple_500)
-            .padding(7.dp),
+            .padding(8.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
