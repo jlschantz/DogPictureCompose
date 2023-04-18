@@ -19,7 +19,6 @@ import javax.inject.Inject
 class DogViewModel @Inject constructor(private val dogRepository: DogRepository): ViewModel() {
 
     var searchForTypeResult: ResultState<*> by mutableStateOf(Success<List<String>>(listOf()))
-    private var getDogBreedListResult: ResultState<*> by mutableStateOf(Success<List<String>>(listOf()))
     var filteredDogBreedList: List<DogBreed> by mutableStateOf(listOf())
 
     init {
@@ -50,23 +49,7 @@ class DogViewModel @Inject constructor(private val dogRepository: DogRepository)
 
     private fun getDogBreedList() {
         viewModelScope.launch {
-            dogRepository.getDogBreedList().collect { resource ->
-                when (resource) {
-                    is Success -> {
-                        resource.data?.let { list ->
-                            getDogBreedListResult = Success(list)
-                        } ?: {
-                            getDogBreedListResult = Error<List<String>>(null)
-                        }
-                    }
-                    is Error -> {
-                        getDogBreedListResult = Error<List<String>>(resource.message.toString())
-                    }
-                    is Loading -> {
-                        getDogBreedListResult = Loading<List<String>>()
-                    }
-                }
-            }
+            dogRepository.getDogBreedList()
         }
     }
 
