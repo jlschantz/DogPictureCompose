@@ -107,7 +107,7 @@ fun DogPictureListLayout(dogViewModel: DogViewModel) {
 
             if (dogViewModel.searchForTypeResult is ResultState.Error && !showDropDown) {
                 val context = LocalContext.current
-                Log.i("tag", "message ${dogViewModel.searchForTypeResult.message}")
+
                 Toast.makeText(
                     context,
                     if(dogViewModel.searchForTypeResult.message.isNullOrEmpty())
