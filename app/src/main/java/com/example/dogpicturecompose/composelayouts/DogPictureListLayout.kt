@@ -43,6 +43,10 @@ fun DogPictureListLayout(dogViewModel: DogViewModel) {
             mutableStateOf(false)
         }
 
+        var errorDisplayed by remember {
+            mutableStateOf(false)
+        }
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -78,6 +82,7 @@ fun DogPictureListLayout(dogViewModel: DogViewModel) {
         }
 
         if (dogViewModel.searchForTypeResult is ResultState.Loading) {
+            errorDisplayed = false
             CircularProgressIndicator(
                 modifier = Modifier
                     .size(50.dp)
@@ -104,9 +109,9 @@ fun DogPictureListLayout(dogViewModel: DogViewModel) {
                 }
             }
 
-            if (dogViewModel.searchForTypeResult is ResultState.Error && !showDropDown) {
+            if (dogViewModel.searchForTypeResult is ResultState.Error && !errorDisplayed) {
                 val context = LocalContext.current
-
+                errorDisplayed = true
                 Toast.makeText(
                     context,
                     if(dogViewModel.searchForTypeResult.message.isNullOrEmpty())
