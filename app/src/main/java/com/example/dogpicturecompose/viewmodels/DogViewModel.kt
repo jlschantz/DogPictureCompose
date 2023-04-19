@@ -5,15 +5,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.dogpicturecompose.R
 import com.example.dogpicturecompose.api.ResultState
 import com.example.dogpicturecompose.api.ResultState.*
 import com.example.dogpicturecompose.db.DogBreed
 import com.example.dogpicturecompose.repositories.DogRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel

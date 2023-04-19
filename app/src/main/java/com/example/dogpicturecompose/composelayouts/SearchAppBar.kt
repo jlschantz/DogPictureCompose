@@ -1,6 +1,5 @@
 package com.example.dogpicturecompose.composelayouts
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions

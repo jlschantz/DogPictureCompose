@@ -9,7 +9,7 @@ import javax.inject.Inject
 
 class DogRepository @Inject constructor(
     private val dogApi: DogApi,
-    private val dogDatabase: DogDatabase
+    dogDatabase: DogDatabase
 ) {
 
     private val dogBreedDao = dogDatabase.dogBreedDao()
