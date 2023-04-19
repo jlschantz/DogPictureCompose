@@ -1,5 +1,6 @@
 package com.example.dogpicturecompose.composelayouts
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -104,13 +105,15 @@ fun DogPictureListLayout(dogViewModel: DogViewModel) {
                 }
             }
 
-            if (dogViewModel.searchForTypeResult is ResultState.Error) {
+            if (dogViewModel.searchForTypeResult is ResultState.Error && !showDropDown) {
                 val context = LocalContext.current
-
+                Log.i("tag", "message ${dogViewModel.searchForTypeResult.message}")
                 Toast.makeText(
                     context,
-                    dogViewModel.searchForTypeResult.message
-                        ?: context.getString(R.string.an_error_has_occurred),
+                    if(dogViewModel.searchForTypeResult.message.isNullOrEmpty())
+                        context.getString(R.string.an_error_has_occurred)
+                    else
+                        dogViewModel.searchForTypeResult.message,
                     Toast.LENGTH_SHORT
                 ).show()
             }

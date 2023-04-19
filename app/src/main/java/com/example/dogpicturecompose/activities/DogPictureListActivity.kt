@@ -10,7 +10,7 @@ import com.example.dogpicturecompose.viewmodels.DogViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+class DogPictureListActivity : ComponentActivity() {
 
     private val dogViewModel: DogViewModel by viewModels()
 

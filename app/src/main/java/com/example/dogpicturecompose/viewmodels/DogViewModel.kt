@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.dogpicturecompose.R
 import com.example.dogpicturecompose.api.ResultState
 import com.example.dogpicturecompose.api.ResultState.*
 import com.example.dogpicturecompose.db.DogBreed
@@ -33,11 +34,11 @@ class DogViewModel @Inject constructor(private val dogRepository: DogRepository)
                         resource.data?.let { list ->
                             searchForTypeResult = Success(list)
                         } ?: {
-                            searchForTypeResult = Error<List<String>>(null)
+                            searchForTypeResult = Error<List<String>>("")
                         }
                     }
                     is Error -> {
-                        searchForTypeResult = Error<List<String>>(resource.message.toString())
+                        searchForTypeResult = Error<List<String>>(if(resource.message.isNullOrEmpty()) "" else resource.message)
                     }
                     is Loading -> {
                         searchForTypeResult = Loading<List<String>>()
