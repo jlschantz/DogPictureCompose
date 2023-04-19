@@ -18,6 +18,9 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.ConstraintSet
+import androidx.constraintlayout.compose.layoutId
 import com.example.dogpicturecompose.R
 import com.example.dogpicturecompose.api.ResultState
 import com.example.dogpicturecompose.ui.theme.Purple_500
@@ -25,10 +28,12 @@ import com.example.dogpicturecompose.viewmodels.DogViewModel
 
 @Composable
 fun DogPictureListLayout(dogViewModel: DogViewModel) {
-    Column(
+
+    ConstraintLayout(
+        constraints(),
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(Color.White),
     ) {
         var searchBarDisplayed by remember {
             mutableStateOf(false)
@@ -38,99 +43,141 @@ fun DogPictureListLayout(dogViewModel: DogViewModel) {
             mutableStateOf(false)
         }
 
-        if(searchBarDisplayed){
-            SearchAppBar(
-                onSearchButtonClicked = { query ->
-                    showDropDown = false
-                    dogViewModel.searchForType(query)
-                },
-                onCloseIconClicked = {
-                    searchBarDisplayed = false
-                },
-                onValueChange = { query ->
-                    showDropDown = query.isNotEmpty()
-                    if(showDropDown){
-                        dogViewModel.getDogBreedsStartingWith(query)
-                    }
-                }
-            )
-        } else {
-            TopAppBar(
-                onSearchIconClicked = {
-                    searchBarDisplayed = true
-                }
-            )
-        }
-
-        Box(
+        Row(
             modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
+                .fillMaxWidth()
+                .background(Purple_500)
+                .defaultMinSize(0.dp,60.dp)
+                .layoutId("topAppBar"),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.White),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                if (dogViewModel.searchForTypeResult is ResultState.Loading) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(50.dp),
-                        color = Purple_500
-                    )
-                } else {
-                    val dogPictureList: List<*>? = dogViewModel.searchForTypeResult.data as? List<*>
-
-                    if (dogPictureList.isNullOrEmpty()) {
-                        Text(
-                            text = stringResource(id = R.string.no_results),
-                            fontSize = 14.sp,
-                            color = Color.Gray
-                        )
-                    } else {
-                        LazyColumn {
-                            items(dogPictureList) { item ->
-                                PictureRow(url = item as String)
-                            }
+            if (searchBarDisplayed) {
+                SearchAppBar(
+                    onSearchButtonClicked = { query ->
+                        showDropDown = false
+                        dogViewModel.searchForType(query)
+                    },
+                    onCloseIconClicked = {
+                        searchBarDisplayed = false
+                    },
+                    onValueChange = { query ->
+                        showDropDown = query.isNotEmpty()
+                        if (showDropDown) {
+                            dogViewModel.getDogBreedsStartingWith(query)
                         }
                     }
+                )
+            } else {
+                TopAppBar(
+                    onSearchIconClicked = {
+                        searchBarDisplayed = true
+                    }
+                )
+            }
+        }
 
-                    if (dogViewModel.searchForTypeResult is ResultState.Error) {
-                        val context = LocalContext.current
+        if (dogViewModel.searchForTypeResult is ResultState.Loading) {
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .size(50.dp)
+                    .layoutId("circularProgressIndicator"),
+                color = Purple_500
+            )
+        } else {
+            val dogPictureList: List<*>? = dogViewModel.searchForTypeResult.data as? List<*>
 
-                        Toast.makeText(
-                            context,
-                            dogViewModel.searchForTypeResult.message
-                                ?: context.getString(R.string.an_error_has_occurred),
-                            Toast.LENGTH_SHORT
-                        ).show()
+            if (dogPictureList.isNullOrEmpty()) {
+                Text(
+                    modifier = Modifier.layoutId("noResultsText"),
+                    text = stringResource(id = R.string.no_results),
+                    fontSize = 14.sp,
+                    color = Color.Gray
+                )
+            } else {
+                LazyColumn(
+                    modifier = Modifier.layoutId("dogPictureList")
+                ) {
+                    items(dogPictureList) { item ->
+                        PictureRow(url = item as String)
                     }
                 }
             }
 
-            val focusManager = LocalFocusManager.current
+            if (dogViewModel.searchForTypeResult is ResultState.Error) {
+                val context = LocalContext.current
 
-            if(showDropDown) {
-                LazyColumn {
-                    items(dogViewModel.filteredDogBreedList) { item ->
-                        Divider(color = Color.White)
-                        Text(
-                            text = item.name,
-                            color = Color.White,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable {
-                                    focusManager.clearFocus()
-                                    showDropDown = false
-                                    dogViewModel.searchForType(item.name)
-                                }
-                                .background(Purple_500)
-                                .padding(16.dp)
-                        )
-                    }
+                Toast.makeText(
+                    context,
+                    dogViewModel.searchForTypeResult.message
+                        ?: context.getString(R.string.an_error_has_occurred),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+
+        val focusManager = LocalFocusManager.current
+
+        if (showDropDown) {
+            LazyColumn(
+                modifier = Modifier.layoutId("filteredDogBreedList")
+            ) {
+                items(dogViewModel.filteredDogBreedList) { item ->
+                    Divider(color = Color.White)
+                    Text(
+                        text = item.name,
+                        color = Color.White,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                focusManager.clearFocus()
+                                showDropDown = false
+                                dogViewModel.searchForType(item.name)
+                            }
+                            .background(Purple_500)
+                            .padding(16.dp)
+                    )
                 }
             }
+        }
+    }
+}
+
+private fun constraints(): ConstraintSet {
+    return ConstraintSet {
+
+        val topAppBar = createRefFor("topAppBar")
+        val circularProgressIndicator = createRefFor("circularProgressIndicator")
+        val noResultsText = createRefFor("noResultsText")
+        val dogPictureList = createRefFor("dogPictureList")
+        val filteredDogBreedList = createRefFor("filteredDogBreedList")
+
+        constrain(topAppBar){
+            top.linkTo(parent.top)
+            start.linkTo(parent.start)
+            end.linkTo(parent.end)
+        }
+        constrain(circularProgressIndicator){
+            top.linkTo(topAppBar.bottom)
+            bottom.linkTo(parent.bottom)
+            start.linkTo(parent.start)
+            end.linkTo(parent.end)
+        }
+        constrain(noResultsText){
+            top.linkTo(topAppBar.bottom)
+            bottom.linkTo(parent.bottom)
+            start.linkTo(parent.start)
+            end.linkTo(parent.end)
+        }
+        constrain(dogPictureList){
+            top.linkTo(topAppBar.bottom)
+            start.linkTo(parent.start)
+            end.linkTo(parent.end)
+        }
+        constrain(filteredDogBreedList){
+            top.linkTo(topAppBar.bottom)
+            start.linkTo(parent.start)
+            end.linkTo(parent.end)
         }
     }
 }

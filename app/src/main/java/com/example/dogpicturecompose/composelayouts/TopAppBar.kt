@@ -19,28 +19,20 @@ import com.example.dogpicturecompose.ui.theme.Purple_500
 
 @Composable
 fun TopAppBar(onSearchIconClicked: () -> Unit) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Purple_500)
-            .padding(8.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Text(
-            text = stringResource(id = R.string.dog_pictures),
-            color = Color.White,
-            fontSize = 20.sp,
-            modifier = Modifier.padding(PaddingValues(10.dp,0.dp,0.dp,0.dp))
 
+    Text(
+        text = stringResource(id = R.string.dog_pictures),
+        color = Color.White,
+        fontSize = 20.sp,
+        modifier = Modifier.padding(PaddingValues(10.dp,0.dp,0.dp,0.dp))
+
+    )
+    IconButton(onClick = onSearchIconClicked) {
+        Icon(
+            modifier = Modifier.size(26.dp),
+            imageVector = Icons.Rounded.Search,
+            contentDescription = stringResource(id = R.string.search),
+            tint = Color.White
         )
-        IconButton(onClick = onSearchIconClicked) {
-            Icon(
-                modifier = Modifier.size(26.dp),
-                imageVector = Icons.Rounded.Search,
-                contentDescription = stringResource(id = R.string.search),
-                tint = Color.White
-            )
-        }
     }
 }
